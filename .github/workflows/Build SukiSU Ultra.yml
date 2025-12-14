@@ -1,4 +1,5 @@
 name: Build SukiSU Ultra
+
 on:
   workflow_dispatch:
     inputs:
@@ -7,6 +8,7 @@ on:
         description: "CPU分支"
         required: true
         type: choice
+        default: 'sm8650'
         options:
           - 'sm8750'
           - 'mt6991'
@@ -19,12 +21,12 @@ on:
           - 'sm7675'
           - 'sm7550'
           - 'sm6375'
-        default: 'sm8650'
         
       FEIL:
-        description: "手机型号"
+        description: "手机型号 _b 后缀：ColorOS 16;_v 后缀：ColorOS 15;_u 后缀：ColorOS 14;_t 后缀：ColorOS 13"
         required: true
         type: choice
+        default: 'oneplus_ace5_pro_b'
         options:
           - 'oneplus_13_b'
           - 'oneplus_13s_b'
@@ -55,29 +57,31 @@ on:
           - 'oneplus_ace_3v'
           - 'onrplus_nord_4'
           - 'oneplus_nord_ce4_lite_5g'
-        default: 'oneplus_12_b'
+        
         
       ANDROID_VERSION:
         description: "安卓KMI版本"
         required: true
         type: choice
+        default: 'android14'
         options:
           - 'android15'
           - 'android14'
           - 'android13'
           - 'android12'
-        default: 'android14'
+        
         
       KERNEL_VERSION:
         description: "内核版本"
         required: true
         type: choice
+        default: '6.1'
         options:
           - '6.6'
           - '6.1'
           - '5.15'
           - '5.10'
-        default: '6.1'
+        
         
       KPM:
        description: "是否启用KPM"
@@ -123,6 +127,12 @@ on:
           - 'On'
           - 'Off'
        default: 'On'
+       
+      kernel_suffix:
+        description: '内核后缀(留空默认,开头别加连字符,勿加空格等影响指令运行的保留字符)'
+        required: false
+        type: string
+        default: 'android14-11-o-gde312cf5bc85'
          
 jobs:
   build:
@@ -233,11 +243,11 @@ jobs:
           sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/external/dtc/scripts/setlocalversion
           
           if [ "${{ github.event.inputs.KERNEL_VERSION }}" != "6.6" ]; then
-            sed -i '$s|echo "\$res"|echo "-${{ github.event.inputs.ANDROID_VERSION }}-oki-xiaoxiaow"|' kernel_platform/common/scripts/setlocalversion            
-            sed -i '$s|echo "\$res"|echo "-${{ github.event.inputs.ANDROID_VERSION }}-oki-xiaoxiaow"|' kernel_platform/msm-kernel/scripts/setlocalversion
-            sed -i '$s|echo "\$res"|echo "-${{ github.event.inputs.ANDROID_VERSION }}-oki-xiaoxiaow"|' kernel_platform/external/dtc/scripts/setlocalversion
+            sed -i '$s|echo "\$res"|echo "-${{ github.event.inputs.kernel_suffix }}"|' kernel_platform/common/scripts/setlocalversion            
+            sed -i '$s|echo "\$res"|echo "-${{ github.event.inputs.kernel_suffix }}"|' kernel_platform/msm-kernel/scripts/setlocalversion
+            sed -i '$s|echo "\$res"|echo "-${{ github.event.inputs.kernel_suffix }}"|' kernel_platform/external/dtc/scripts/setlocalversion
           else
-            ESCAPED_SUFFIX=$(printf '%s\n' "-${{ github.event.inputs.ANDROID_VERSION }}-oki-xiaoxiaow" | sed 's:[\/&]:\\&:g')
+            ESCAPED_SUFFIX=$(printf '%s\n' "-${{ github.event.inputs.kernel_suffix }}" | sed 's:[\/&]:\\&:g')
             sudo sed -i "s/-4k/$ESCAPED_SUFFIX/g" kernel_platform/common/arch/arm64/configs/gki_defconfig
             sed -i 's/${scm_version}//' kernel_platform/common/scripts/setlocalversion
             sed -i 's/${scm_version}//' kernel_platform/msm-kernel/scripts/setlocalversion
