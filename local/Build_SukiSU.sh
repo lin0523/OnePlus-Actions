@@ -113,11 +113,11 @@ sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/msm-ker
 sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/external/dtc/scripts/setlocalversion
 
 if [ "$KERNEL_VERSION" != "6.6" ]; then
-  sed -i '$s|echo "\$res"|echo "-'"$adv"'-oki-xiaoxiaow"|' kernel_platform/common/scripts/setlocalversion
-  sed -i '$s|echo "\$res"|echo "-'"$adv"'-oki-xiaoxiaow"|' kernel_platform/msm-kernel/scripts/setlocalversion
-  sed -i '$s|echo "\$res"|echo "-'"$adv"'-oki-xiaoxiaow"|' kernel_platform/external/dtc/scripts/setlocalversion
+  sed -i '$s|echo "\$res"|echo "-'"$adv"'-11-o-gde312cf5bc85"|' kernel_platform/common/scripts/setlocalversion
+  sed -i '$s|echo "\$res"|echo "-'"$adv"'-11-o-gde312cf5bc85"|' kernel_platform/msm-kernel/scripts/setlocalversion
+  sed -i '$s|echo "\$res"|echo "-'"$adv"'-11-o-gde312cf5bc85"|' kernel_platform/external/dtc/scripts/setlocalversion
 else
-  ESCAPED_SUFFIX=$(printf '%s\n' "-${ANDROID_VERSION}-oki-xiaoxiaow" | sed 's:[\/&]:\\&:g')
+  ESCAPED_SUFFIX=$(printf '%s\n' "-${ANDROID_VERSION}-11-o-gde312cf5bc85" | sed 's:[\/&]:\\&:g')
   sed -i "s/-4k/${ESCAPED_SUFFIX}/g" kernel_platform/common/arch/arm64/configs/gki_defconfig
   sed -i 's/\${scm_version}//' kernel_platform/common/scripts/setlocalversion
   sed -i 's/\${scm_version}//' kernel_platform/msm-kernel/scripts/setlocalversion
