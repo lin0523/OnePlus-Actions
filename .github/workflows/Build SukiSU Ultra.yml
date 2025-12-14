@@ -28,7 +28,7 @@ on:
         description: "手机型号 _b 后缀：ColorOS 16;_v 后缀：ColorOS 15;_u 后缀：ColorOS 14;_t 后缀：ColorOS 13"
         required: true
         type: choice
-        default: 'oneplus_ace5_pro_b'
+        default: 'oneplus_ace5_b'
         options:
           - 'oneplus_13_b'
           - 'oneplus_13s_b'
